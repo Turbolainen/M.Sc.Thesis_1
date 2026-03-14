@@ -1,2 +1,4 @@
 # M.Sc.Thesis_1
 M.Sc. Thesis 1 at Lund University - Codebase for analysis of Price formation in Swedish Electricity Market 
+
+"We examine how renewable generation forecast revisions propagate into DA-balance price spreads in Swedish electricity markets, arguing that the DA→ID quantity revision represents information available to the market at t-1 that should — if markets are efficient — be priced before reaching the balance stage. Using zone fixed effects and the exogeneity of meteorological forecasts as identification, we find that this propagation is heterogeneous across SE1-SE4 in a manner consistent with differences in local flexibility availability. We further document asymmetric responses to positive and negative forecast errors within zones."
