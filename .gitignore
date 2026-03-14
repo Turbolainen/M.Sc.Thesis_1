@@ -1,0 +1,29 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+env/
+
+# Data — raw and processed files are local only
+data/raw/*
+data/processed/*
+!data/raw/.gitkeep
+!data/processed/.gitkeep
+
+# Outputs — generated artefacts, keep placeholders
+output/figures/*
+output/tables/*
+!output/figures/.gitkeep
+!output/tables/.gitkeep
+
+# Notebooks checkpoints
+notebooks/.ipynb_checkpoints/
+
+# Secrets — never commit the real API key
+.env
+*.env
+
+# OS
+.DS_Store
