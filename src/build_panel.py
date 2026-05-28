@@ -141,6 +141,52 @@ panel = pd.concat(zone_frames)
 panel.index.name = "timestamp_utc"
 panel.sort_values(["timestamp_utc", "zone"], inplace=True)
 
+# ---------------------------------------------------------------------------
+# 3. POST-PROCESS — make analysis-ready
+# ---------------------------------------------------------------------------
+
+print()
+print("=" * 60)
+print("STEP 3 — Post-processing for panel analysis")
+print("=" * 60)
+
+# 3a. Convert trade times (CET strings) to numeric lead hours before delivery
+for raw_col, new_col in [
+    ("id_open_trade_time",  "id_lead_open_h"),
+    ("id_close_trade_time", "id_lead_close_h"),
+]:
+    trade_utc = (
+        pd.to_datetime(panel[raw_col], format="%d.%m.%Y %H:%M:%S", errors="coerce")
+        .dt.tz_localize("Europe/Paris", ambiguous="NaT", nonexistent="shift_forward")
+        .dt.tz_convert("UTC")
+    )
+    panel[new_col] = (panel.index - trade_utc).dt.total_seconds() / 3600
+    panel.drop(columns=[raw_col], inplace=True)
+print("  Trade times → lead hours (id_lead_open_h, id_lead_close_h)")
+
+# 3b. Fill structural NaN generation columns with 0
+#     A column is structural-zero for a zone if it is entirely NaN for that zone
+gen_cols = [c for c in panel.columns if c.startswith("gen_actual_")]
+fills = 0
+for col in gen_cols:
+    mask = panel.groupby("zone")[col].transform(lambda s: s.isna().all())
+    panel.loc[mask, col] = 0.0
+    fills += int(mask.sum())
+print(f"  Structural NaN fills (generation): {fills} cells set to 0")
+
+# 3c. Set (zone, timestamp_utc) MultiIndex — entity first, as expected by linearmodels
+panel = panel.drop(columns=["zone"]).set_index(
+    pd.MultiIndex.from_arrays(
+        [panel["zone"], panel.index],
+        names=["zone", "timestamp_utc"],
+    )
+)
+print("  MultiIndex set: (zone, timestamp_utc)")
+
+# ---------------------------------------------------------------------------
+# Save
+# ---------------------------------------------------------------------------
+
 out_path = PROCESSED_DIR / "panel_data.csv"
 panel.to_csv(out_path)
 
@@ -150,6 +196,7 @@ print(f"Saved  {out_path.name}")
 print(f"  Shape   : {panel.shape[0]:,} rows  ×  {panel.shape[1]} columns")
 print(f"  Size    : {size_mb:.1f} MB")
 print(f"  Columns : {panel.columns.tolist()}")
-print(f"  From    : {panel.index.min()}")
-print(f"  To      : {panel.index.max()}")
-print(f"  Zones   : {panel['zone'].unique().tolist()}")
+print(f"  Index   : {panel.index.names}")
+print(f"  From    : {panel.index.get_level_values('timestamp_utc').min()}")
+print(f"  To      : {panel.index.get_level_values('timestamp_utc').max()}")
+print(f"  Zones   : {panel.index.get_level_values('zone').unique().tolist()}")
