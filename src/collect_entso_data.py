@@ -160,20 +160,34 @@ def pull_installed_capacity(zone_code: str, _year: int) -> pd.DataFrame:
     return raw
 
 
+def pull_generation_actual(zone_code: str, year: int) -> pd.DataFrame:
+    start, end = year_range(year)
+    raw = pull_with_retry(client.query_generation, zone_code, start=start, end=end)
+    return to_utc_frame(raw)
+
+
+def pull_generation_forecast(zone_code: str, year: int) -> pd.DataFrame:
+    start, end = year_range(year)
+    raw = pull_with_retry(client.query_generation_forecast, zone_code, start=start, end=end)
+    return to_utc_frame(raw)
+
+
 # ---------------------------------------------------------------------------
 # Dispatch table  {filename_stem: pull_function}
 # ---------------------------------------------------------------------------
 
 DATASETS = [
-    ("da_prices",           pull_da_prices),
-    ("imbalance_prices",    pull_imbalance_prices),
-    ("wind_da_forecast",    pull_wind_da_forecast),
-    ("solar_da_forecast",   pull_solar_da_forecast),
-    ("wind_actual",         pull_wind_actual),
-    ("solar_actual",        pull_solar_actual),
-    ("load_forecast",       pull_load_forecast),
-    ("load_actual",         pull_load_actual),
-    ("installed_capacity",  pull_installed_capacity),
+    ("da_prices",            pull_da_prices),
+    ("imbalance_prices",     pull_imbalance_prices),
+    ("wind_da_forecast",     pull_wind_da_forecast),
+    ("solar_da_forecast",    pull_solar_da_forecast),
+    ("wind_actual",          pull_wind_actual),
+    ("solar_actual",         pull_solar_actual),
+    ("load_forecast",        pull_load_forecast),
+    ("load_actual",          pull_load_actual),
+    ("generation_actual",    pull_generation_actual),
+    ("generation_forecast",  pull_generation_forecast),
+    ("installed_capacity",   pull_installed_capacity),
 ]
 
 # ---------------------------------------------------------------------------
