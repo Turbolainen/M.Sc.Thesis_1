@@ -163,7 +163,8 @@ for raw_col, new_col in [
         .dt.tz_localize("Europe/Paris", ambiguous="NaT", nonexistent="shift_forward")
         .dt.tz_convert("UTC")
     )
-    panel[new_col] = (panel.index - trade_utc).dt.total_seconds() / 3600
+    delivery_utc = panel.index.tz_convert("UTC")
+    panel[new_col] = (delivery_utc - trade_utc).dt.total_seconds() / 3600
     panel.drop(columns=[raw_col], inplace=True)
 print("  Trade times → lead hours (id_lead_open_h, id_lead_close_h)")
 
@@ -177,14 +178,20 @@ for col in gen_cols:
     fills += int(mask.sum())
 print(f"  Structural NaN fills (generation): {fills} cells set to 0")
 
-# 3c. Set (zone, timestamp_utc) MultiIndex — entity first, as expected by linearmodels
+# 3c. Convert UTC index → Europe/Stockholm so timestamps match ENTSO-E website display
+local_index = panel.index.tz_convert("Europe/Stockholm")
+panel.index = local_index
+panel.index.name = "timestamp_cet"
+print("  Index converted UTC → Europe/Stockholm (CET/CEST)")
+
+# 3d. Set (zone, timestamp_cet) MultiIndex — entity first, as expected by linearmodels
 panel = panel.drop(columns=["zone"]).set_index(
     pd.MultiIndex.from_arrays(
         [panel["zone"], panel.index],
-        names=["zone", "timestamp_utc"],
+        names=["zone", "timestamp_cet"],
     )
 )
-print("  MultiIndex set: (zone, timestamp_utc)")
+print("  MultiIndex set: (zone, timestamp_cet)")
 
 # ---------------------------------------------------------------------------
 # Save
@@ -200,6 +207,6 @@ print(f"  Shape   : {panel.shape[0]:,} rows  ×  {panel.shape[1]} columns")
 print(f"  Size    : {size_mb:.1f} MB")
 print(f"  Columns : {panel.columns.tolist()}")
 print(f"  Index   : {panel.index.names}")
-print(f"  From    : {panel.index.get_level_values('timestamp_utc').min()}")
-print(f"  To      : {panel.index.get_level_values('timestamp_utc').max()}")
+print(f"  From    : {panel.index.get_level_values('timestamp_cet').min()}")
+print(f"  To      : {panel.index.get_level_values('timestamp_cet').max()}")
 print(f"  Zones   : {panel.index.get_level_values('zone').unique().tolist()}")
