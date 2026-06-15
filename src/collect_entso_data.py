@@ -160,6 +160,24 @@ def pull_installed_capacity(zone_code: str, _year: int) -> pd.DataFrame:
     return raw
 
 
+def pull_wind_id_forecast(zone_code: str, year: int) -> pd.DataFrame:
+    start, end = year_range(year)
+    raw = pull_with_retry(
+        client.query_wind_and_solar_forecast, zone_code, start=start, end=end,
+        psr_type="B19", process_type="A40"
+    )
+    return to_utc_frame(raw)
+
+
+def pull_solar_id_forecast(zone_code: str, year: int) -> pd.DataFrame:
+    start, end = year_range(year)
+    raw = pull_with_retry(
+        client.query_wind_and_solar_forecast, zone_code, start=start, end=end,
+        psr_type="B16", process_type="A40"
+    )
+    return to_utc_frame(raw)
+
+
 def pull_generation_actual(zone_code: str, year: int) -> pd.DataFrame:
     start, end = year_range(year)
     raw = pull_with_retry(client.query_generation, zone_code, start=start, end=end)
@@ -181,6 +199,8 @@ DATASETS = [
     ("imbalance_prices",     pull_imbalance_prices),
     ("wind_da_forecast",     pull_wind_da_forecast),
     ("solar_da_forecast",    pull_solar_da_forecast),
+    ("wind_id_forecast",     pull_wind_id_forecast),
+    ("solar_id_forecast",    pull_solar_id_forecast),
     ("wind_actual",          pull_wind_actual),
     ("solar_actual",         pull_solar_actual),
     ("load_forecast",        pull_load_forecast),

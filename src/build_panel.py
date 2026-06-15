@@ -36,6 +36,8 @@ TIMESERIES_MAP = {
     "imbalance_prices":   (["Long", "Short"],    ["imbalance_price_long", "imbalance_price_short"]),
     "wind_da_forecast":   (["Wind Onshore"],     ["wind_da_forecast_mw"]),
     "solar_da_forecast":  (["Solar"],            ["solar_da_forecast_mw"]),
+    "wind_id_forecast":   (["Wind Onshore"],     ["wind_id_forecast_mw"]),
+    "solar_id_forecast":  (["Solar"],            ["solar_id_forecast_mw"]),
     "wind_actual":        (["Wind Onshore"],     ["wind_actual_mw"]),
     "solar_actual":       (["Solar"],            ["solar_actual_mw"]),
     "load_forecast":      (["Forecasted Load"],  ["load_forecast_mw"]),
@@ -66,6 +68,7 @@ print("=" * 60)
 
 # Fixed time-series + generation + intraday
 stems_to_trim = list(TIMESERIES_MAP.keys()) + ["generation_actual", "generation_forecast", "intraday"]
+# Note: wind_id_forecast and solar_id_forecast are already in TIMESERIES_MAP
 
 for stem in stems_to_trim:
     for zone in ZONES:
