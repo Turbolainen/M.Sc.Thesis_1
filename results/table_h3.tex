@@ -1,0 +1,33 @@
+\begin{table}[htbp]
+\centering
+\caption{H3 Zone Heterogeneity: Zone-Specific Effects of Renewable Forecast Errors}
+\label{tab:h3}
+\begin{tabular}{lcc}
+\toprule
+ & $Y_1 = P^{ID} - P^{DA}$ & $Y_2 = P^{B} - P^{ID}$ \\
+\midrule
+$\varepsilon_V \times$ SE1 & -0.0249*** & -0.0021 \\
+                         & (0.0029) & (0.0017) \\
+\addlinespace
+$\varepsilon_V \times$ SE2 & -0.0142*** & -0.0002 \\
+                         & (0.0037) & (0.0010) \\
+\addlinespace
+$\varepsilon_V \times$ SE3 & -0.0218*** & -0.0154** \\
+                         & (0.0038) & (0.0061) \\
+\addlinespace
+$\varepsilon_V \times$ SE4 & -0.0324*** & -0.0226** \\
+                         & (0.0062) & (0.0100) \\
+\addlinespace
+$\varepsilon_L$ & 0.0074*** & 0.0203*** \\
+               & (0.0009) & (0.0018) \\
+\midrule
+Within $R^2$            & 0.0268 & 0.0122 \\
+$N$                     & 112,666 & 112,051 \\
+Wald test (equality)    & $W=11.482$, $p=0.0094$*** & $W=9.051$, $p=0.0286$** \\
+\bottomrule
+\multicolumn{3}{l}{\footnotesize Zone fixed effects and calendar dummies included. No standalone $\varepsilon_V$ term} \\
+\multicolumn{3}{l}{\footnotesize (zone interactions are exhaustive). Driscoll--Kraay SE (Bartlett, bw~24) in parentheses.} \\
+\multicolumn{3}{l}{\footnotesize Wald test: $H_0\colon \beta_{SE1}=\beta_{SE2}=\beta_{SE3}=\beta_{SE4}$, $\chi^2(3)$.} \\
+\multicolumn{3}{l}{\footnotesize $^{***}p<0.01$,\ $^{**}p<0.05$,\ $^{*}p<0.10$.} \\
+\end{tabular}
+\end{table}

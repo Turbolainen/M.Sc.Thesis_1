@@ -1,0 +1,130 @@
+======================================================================
+MASTER RESULTS FILE — Sequential Price Formation, SE Electricity Markets
+======================================================================
+
+\begin{table}[htbp]
+\centering
+\caption{Descriptive Statistics by Bidding Zone}
+\label{tab:descriptives}
+\begin{tabular}{llrrrr}
+\toprule
+Zone & Variable & Mean & SD & Min & Max \\
+\midrule
+SE1 & $Y_1 = P^{ID} - P^{DA}$ &    -1.16 &    19.84 &    -250.60 &     367.02 \\
+ & $Y_2 = P^{B}  - P^{ID}$ &    -3.18 &    33.78 &   -2191.17 &     788.86 \\
+ & $\varepsilon_V$ (total) &   -15.16 &   136.07 &   -1365.74 &    1688.06 \\
+ & $\varepsilon_V^{pre}$ &    -8.96 &   102.16 &   -1126.14 &     845.65 \\
+ & $\varepsilon_V^{post}$ &    -6.24 &    92.77 &   -1239.76 &    1695.82 \\
+ & $\varepsilon_L$ &   -29.06 &   165.44 &    -909.00 &    1581.00 \\
+\addlinespace
+SE2 & $Y_1 = P^{ID} - P^{DA}$ &    -0.89 &    20.31 &    -299.18 &     347.95 \\
+ & $Y_2 = P^{B}  - P^{ID}$ &    -2.31 &    42.01 &   -2191.12 &    1954.14 \\
+ & $\varepsilon_V$ (total) &    -9.42 &   265.02 &   -6208.50 &    3416.05 \\
+ & $\varepsilon_V^{pre}$ &    -8.58 &   156.90 &   -1971.92 &    1897.85 \\
+ & $\varepsilon_V^{post}$ &    -1.03 &   195.57 &   -5261.46 &    3342.72 \\
+ & $\varepsilon_L$ &  -101.63 &   284.47 &   -1734.00 &    6441.00 \\
+\addlinespace
+SE3 & $Y_1 = P^{ID} - P^{DA}$ &    -1.45 &    24.81 &    -501.45 &     447.51 \\
+ & $Y_2 = P^{B}  - P^{ID}$ &     1.43 &    59.15 &   -2188.54 &    2394.11 \\
+ & $\varepsilon_V$ (total) &    -1.44 &    85.37 &    -872.61 &    1450.85 \\
+ & $\varepsilon_V^{pre}$ &    -5.30 &    59.46 &    -734.42 &     657.79 \\
+ & $\varepsilon_V^{post}$ &     3.72 &    55.31 &    -870.87 &    1409.37 \\
+ & $\varepsilon_L$ &   -13.23 &   309.64 &   -1622.00 &    1956.00 \\
+\addlinespace
+SE4 & $Y_1 = P^{ID} - P^{DA}$ &    -2.96 &    30.52 &    -522.37 &     493.67 \\
+ & $Y_2 = P^{B}  - P^{ID}$ &    -2.20 &    67.95 &   -2190.95 &    2393.59 \\
+ & $\varepsilon_V$ (total) &    -1.74 &    51.89 &    -667.95 &     635.06 \\
+ & $\varepsilon_V^{pre}$ &    -1.48 &    31.40 &    -735.94 &     514.72 \\
+ & $\varepsilon_V^{post}$ &    -0.39 &    35.82 &    -659.21 &     733.80 \\
+ & $\varepsilon_L$ &    -7.60 &   144.35 &   -1666.00 &     851.00 \\
+\bottomrule
+\multicolumn{6}{l}{\footnotesize All price variables in EUR/MWh; generation variables in MW.} \\
+\multicolumn{6}{l}{\footnotesize Sample: 2021-12-01 -- 2025-03-17, hourly, SE1--SE4.} \\
+\end{tabular}
+\end{table}
+
+
+\begin{table}[htbp]
+\centering
+\caption{H1 Baseline Regressions: Effect of Renewable Forecast Errors on Price Spreads}
+\label{tab:h1}
+\begin{tabular}{lcc}
+\toprule
+ & $Y_1 = P^{ID} - P^{DA}$ & $Y_2 = P^{B} - P^{ID}$ \\
+\midrule
+$\varepsilon_V$ & -0.0173*** & -0.0022** \\
+         & (0.0034) & (0.0011) \\
+\addlinespace
+$\varepsilon_L$ & 0.0074*** & 0.0205*** \\
+         & (0.0009) & (0.0018) \\
+\midrule
+Within $R^2$ & 0.0257 & 0.0119 \\
+$N$          & 112,666 & 112,051 \\
+\bottomrule
+\multicolumn{3}{l}{\footnotesize Zone fixed effects and calendar dummies (hour, day-of-week, month) included.} \\
+\multicolumn{3}{l}{\footnotesize Driscoll--Kraay standard errors (Bartlett kernel, bandwidth~24) in parentheses.} \\
+\multicolumn{3}{l}{\footnotesize $^{***}p<0.01$,\ $^{**}p<0.05$,\ $^{*}p<0.10$.} \\
+\end{tabular}
+\end{table}
+
+
+\begin{table}[htbp]
+\centering
+\caption{H2 Leakage Regression: Pre- vs.\ Post-Gate Forecast Errors on $Y_2$}
+\label{tab:h2}
+\begin{tabular}{lc}
+\toprule
+ & $Y_2 = P^{B} - P^{ID}$ \\
+\midrule
+$\varepsilon_V^{pre}$ & -0.0055*** \\
+         & (0.0017) \\
+\addlinespace
+$\varepsilon_V^{post}$ & 0.0005 \\
+         & (0.0013) \\
+\addlinespace
+$\varepsilon_L$ & 0.0205*** \\
+         & (0.0018) \\
+\midrule
+Within $R^2$ & 0.0120 \\
+$N$          & 111,759 \\
+\bottomrule
+\multicolumn{2}{l}{\footnotesize Zone fixed effects and calendar dummies included.} \\
+\multicolumn{2}{l}{\footnotesize Driscoll--Kraay standard errors (Bartlett kernel, bandwidth~24) in parentheses.} \\
+\multicolumn{2}{l}{\footnotesize $^{***}p<0.01$,\ $^{**}p<0.05$,\ $^{*}p<0.10$.} \\
+\end{tabular}
+\end{table}
+
+
+\begin{table}[htbp]
+\centering
+\caption{H3 Zone Heterogeneity: Zone-Specific Effects of Renewable Forecast Errors}
+\label{tab:h3}
+\begin{tabular}{lcc}
+\toprule
+ & $Y_1 = P^{ID} - P^{DA}$ & $Y_2 = P^{B} - P^{ID}$ \\
+\midrule
+$\varepsilon_V \times$ SE1 & -0.0249*** & -0.0021 \\
+                         & (0.0029) & (0.0017) \\
+\addlinespace
+$\varepsilon_V \times$ SE2 & -0.0142*** & -0.0002 \\
+                         & (0.0037) & (0.0010) \\
+\addlinespace
+$\varepsilon_V \times$ SE3 & -0.0218*** & -0.0154** \\
+                         & (0.0038) & (0.0061) \\
+\addlinespace
+$\varepsilon_V \times$ SE4 & -0.0324*** & -0.0226** \\
+                         & (0.0062) & (0.0100) \\
+\addlinespace
+$\varepsilon_L$ & 0.0074*** & 0.0203*** \\
+               & (0.0009) & (0.0018) \\
+\midrule
+Within $R^2$            & 0.0268 & 0.0122 \\
+$N$                     & 112,666 & 112,051 \\
+Wald test (equality)    & $W=11.482$, $p=0.0094$*** & $W=9.051$, $p=0.0286$** \\
+\bottomrule
+\multicolumn{3}{l}{\footnotesize Zone fixed effects and calendar dummies included. No standalone $\varepsilon_V$ term} \\
+\multicolumn{3}{l}{\footnotesize (zone interactions are exhaustive). Driscoll--Kraay SE (Bartlett, bw~24) in parentheses.} \\
+\multicolumn{3}{l}{\footnotesize Wald test: $H_0\colon \beta_{SE1}=\beta_{SE2}=\beta_{SE3}=\beta_{SE4}$, $\chi^2(3)$.} \\
+\multicolumn{3}{l}{\footnotesize $^{***}p<0.01$,\ $^{**}p<0.05$,\ $^{*}p<0.10$.} \\
+\end{tabular}
+\end{table}
