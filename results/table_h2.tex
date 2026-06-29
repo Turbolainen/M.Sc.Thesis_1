@@ -1,25 +1,34 @@
+\documentclass{article}
+\usepackage{booktabs,threeparttable,tabularx}
+\begin{document}
+
 \begin{table}[htbp]
 \centering
-\caption{H2 Leakage Regression: Pre- vs.\ Post-Gate Forecast Errors on $Y_2$}
+\caption{Information Leakage: Pre- vs.\ Post-Gate Renewable Forecast Errors}
 \label{tab:h2}
-\begin{tabular}{lc}
+\begin{threeparttable}
+\begin{tabularx}{\linewidth}{>{\raggedright\arraybackslash}Xc}
 \toprule
- & $Y_2 = P^{B} - P^{ID}$ \\
+ & $Y_2$ \\
 \midrule
-$\varepsilon_V^{pre}$ & -0.0055*** \\
-         & (0.0017) \\
-\addlinespace
-$\varepsilon_V^{post}$ & 0.0005 \\
-         & (0.0013) \\
-\addlinespace
-$\varepsilon_L$ & 0.0205*** \\
-         & (0.0018) \\
+Pre-gate renewable error ($\varepsilon_V^{\mathrm{pre}}$) & $-0.0055^{***}$ \\
+ & $(0.0017)$ \\[0.4ex]
+Post-gate renewable error ($\varepsilon_V^{\mathrm{post}}$) & $\phantom{-}0.0005$ \\
+ & $(0.0013)$ \\[0.4ex]
+Load forecast error ($\varepsilon_L$) & $\phantom{-}0.0205^{***}$ \\
+ & $(0.0018)$ \\
 \midrule
-Within $R^2$ & 0.0120 \\
-$N$          & 111,759 \\
+Within $R^2$ & 0.012 \\
+Observations & 111,759 \\
+Zone FE & Yes \\
+Calendar Controls & Yes \\
 \bottomrule
-\multicolumn{2}{l}{\footnotesize Zone fixed effects and calendar dummies included.} \\
-\multicolumn{2}{l}{\footnotesize Driscoll--Kraay standard errors (Bartlett kernel, bandwidth~24) in parentheses.} \\
-\multicolumn{2}{l}{\footnotesize $^{***}p<0.01$,\ $^{**}p<0.05$,\ $^{*}p<0.10$.} \\
-\end{tabular}
+\end{tabularx}
+\begin{tablenotes}[flushleft]
+\footnotesize
+\item \textit{Notes:} $\varepsilon_V^{\mathrm{pre}}$ ($\varepsilon_V^{\mathrm{post}}$): renewable forecast error before (after) intraday gate closure (MW). $\varepsilon_L$: load forecast error (MW). Driscoll--Kraay standard errors (Bartlett kernel, bandwidth~24) in parentheses. Calendar controls: hour-of-day, day-of-week, and month fixed effects. $^{***}p<0.01$, $^{**}p<0.05$, $^{*}p<0.10$.
+\end{tablenotes}
+\end{threeparttable}
 \end{table}
+
+\end{document}

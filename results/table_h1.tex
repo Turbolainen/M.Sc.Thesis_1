@@ -1,22 +1,34 @@
+\documentclass{article}
+\usepackage{booktabs,threeparttable,tabularx}
+\begin{document}
+
 \begin{table}[htbp]
 \centering
-\caption{H1 Baseline Regressions: Effect of Renewable Forecast Errors on Price Spreads}
+\caption{Baseline Effect of Renewable Forecast Errors on Electricity Price Spreads}
 \label{tab:h1}
-\begin{tabular}{lcc}
+\begin{threeparttable}
+\begin{tabularx}{\linewidth}{>{\raggedright\arraybackslash}Xcc}
 \toprule
- & $Y_1 = P^{ID} - P^{DA}$ & $Y_2 = P^{B} - P^{ID}$ \\
+ & (1) & (2) \\
+\cmidrule(r){2-2}\cmidrule(l){3-3}
+ & $Y_1$ & $Y_2$ \\
 \midrule
-$\varepsilon_V$ & -0.0173*** & -0.0022** \\
-         & (0.0034) & (0.0011) \\
-\addlinespace
-$\varepsilon_L$ & 0.0074*** & 0.0205*** \\
-         & (0.0009) & (0.0018) \\
+Renewable forecast error ($\varepsilon_V$) & $-0.0173^{***}$ & $-0.0022^{**}$ \\
+ & $(0.0034)$ & $(0.0011)$ \\[0.4ex]
+Load forecast error ($\varepsilon_L$) & $\phantom{-}0.0074^{***}$ & $\phantom{-}0.0205^{***}$ \\
+ & $(0.0009)$ & $(0.0018)$ \\
 \midrule
-Within $R^2$ & 0.0257 & 0.0119 \\
-$N$          & 112,666 & 112,051 \\
+Within $R^2$ & 0.026 & 0.012 \\
+Observations & 112,666 & 112,051 \\
+Zone FE & Yes & Yes \\
+Calendar Controls & Yes & Yes \\
 \bottomrule
-\multicolumn{3}{l}{\footnotesize Zone fixed effects and calendar dummies (hour, day-of-week, month) included.} \\
-\multicolumn{3}{l}{\footnotesize Driscoll--Kraay standard errors (Bartlett kernel, bandwidth~24) in parentheses.} \\
-\multicolumn{3}{l}{\footnotesize $^{***}p<0.01$,\ $^{**}p<0.05$,\ $^{*}p<0.10$.} \\
-\end{tabular}
+\end{tabularx}
+\begin{tablenotes}[flushleft]
+\footnotesize
+\item \textit{Notes:} $\varepsilon_V$: total renewable (wind and solar) forecast error (MW). $\varepsilon_L$: load forecast error (MW). Driscoll--Kraay standard errors (Bartlett kernel, bandwidth~24) in parentheses. Calendar controls: hour-of-day, day-of-week, and month fixed effects. $^{***}p<0.01$, $^{**}p<0.05$, $^{*}p<0.10$.
+\end{tablenotes}
+\end{threeparttable}
 \end{table}
+
+\end{document}
