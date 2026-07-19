@@ -1,0 +1,25 @@
+\documentclass{article}
+\usepackage{booktabs,threeparttable,tabularx}
+\begin{document}
+
+\begin{table}[htbp]
+\centering
+\caption{Panel Unit Root Test: Levin--Lin--Chu (2002)}
+\label{tab:r3_unitroot}
+\begin{threeparttable}
+\begin{tabularx}{\linewidth}{>{\raggedright\arraybackslash}Xccc}
+\toprule
+Variable & LLC statistic & $p$-value & Lags ($\bar{p}$) \\
+\midrule
+$Y_1$ & $-52.930$ & $<0.001$ & 24 \\
+$Y_2$ & $-56.801$ & $<0.001$ & 24 \\
+\bottomrule
+\end{tabularx}
+\begin{tablenotes}[flushleft]
+\footnotesize
+\item \textit{Notes:} Levin, Lin and Chu (2002) pooled panel unit root test. $H_0$: all panels contain a unit root; $H_1$: all panels are stationary. Model includes individual intercepts (entity demeaning via auxiliary OLS). Lag order selected by AIC over $\bar{p}\in\{0,\ldots,\min(24,\lfloor T^{1/3}\rfloor)\}$ per zone; $\bar{p}$ reports the median across zones. $\bar{T}\approx28,515$ usable observations per zone; at this sample size the LLC finite-sample correction factors (Levin et al.\ 2002, Table~2) are negligible and the statistic is referred to $N(0,1)$ (left-tailed).
+\end{tablenotes}
+\end{threeparttable}
+\end{table}
+
+\end{document}
