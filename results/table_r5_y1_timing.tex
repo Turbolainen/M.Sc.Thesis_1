@@ -1,0 +1,32 @@
+\documentclass{article}
+\usepackage{booktabs,threeparttable,tabularx}
+\begin{document}
+
+\begin{table}[htbp]
+\centering
+\caption{Day-Ahead--Intraday Spread: Pre-Gate Renewable Forecast Error}
+\label{tab:r5_y1_timing}
+\begin{threeparttable}
+\begin{tabularx}{\linewidth}{>{\raggedright\arraybackslash}Xc}
+\toprule
+ & $Y_1$ \\
+\midrule
+Pre-gate renewable error ($\varepsilon_V^{\mathrm{pre}}$) & $-0.0244^{***}$ \\
+ & $(0.0025)$ \\[0.4ex]
+Load forecast error ($\varepsilon_L$) & $\phantom{-}0.0080^{***}$ \\
+ & $(0.0008)$ \\
+\midrule
+Within $R^2$ & 0.024 \\
+Observations & 113,597 \\
+Zone FE & Yes \\
+Calendar Controls & Yes \\
+\bottomrule
+\end{tabularx}
+\begin{tablenotes}[flushleft]
+\footnotesize
+\item \textit{Notes:} $\varepsilon_V^{\mathrm{pre}}$: renewable forecast error before intraday gate closure (MW). $\varepsilon_L$: load forecast error (MW). Driscoll--Kraay standard errors (Bartlett kernel, bandwidth~24) in parentheses. Calendar controls: hour-of-day, day-of-week, and month fixed effects. $^{***}p<0.01$, $^{**}p<0.05$, $^{*}p<0.10$.
+\end{tablenotes}
+\end{threeparttable}
+\end{table}
+
+\end{document}
