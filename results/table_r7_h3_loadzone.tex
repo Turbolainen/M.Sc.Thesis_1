@@ -1,0 +1,48 @@
+\documentclass{article}
+\usepackage{booktabs,threeparttable,tabularx}
+\begin{document}
+
+\begin{table}[htbp]
+\centering
+\caption{Zone Heterogeneity: Zone-Specific Effects of Renewable and Load Forecast Errors}
+\label{tab:r7_h3_loadzone}
+\begin{threeparttable}
+\begin{tabularx}{\linewidth}{>{\raggedright\arraybackslash}Xcc}
+\toprule
+ & (1) & (2) \\
+\cmidrule(r){2-2}\cmidrule(l){3-3}
+ & $Y_1$ & $Y_2$ \\
+\midrule
+Renewable error $\times$ SE1 & $-0.0254^{***}$ & $-0.0034^{**}$ \\
+ & $(0.0029)$ & $(0.0017)$ \\[0.4ex]
+Renewable error $\times$ SE2 & $-0.0151^{***}$ & $-0.0027^{***}$ \\
+ & $(0.0040)$ & $(0.0009)$ \\[0.4ex]
+Renewable error $\times$ SE3 & $-0.0207^{***}$ & $-0.0129^{**}$ \\
+ & $(0.0038)$ & $(0.0062)$ \\[0.4ex]
+Renewable error $\times$ SE4 & $-0.0285^{***}$ & $-0.0090$ \\
+ & $(0.0064)$ & $(0.0104)$ \\[0.4ex]
+Load error $\times$ SE1 & $\phantom{-}0.0034^{**}$ & $\phantom{-}0.0098^{***}$ \\
+ & $(0.0015)$ & $(0.0016)$ \\[0.4ex]
+Load error $\times$ SE2 & $\phantom{-}0.0038^{***}$ & $\phantom{-}0.0102^{***}$ \\
+ & $(0.0014)$ & $(0.0017)$ \\[0.4ex]
+Load error $\times$ SE3 & $\phantom{-}0.0100^{***}$ & $\phantom{-}0.0262^{***}$ \\
+ & $(0.0012)$ & $(0.0026)$ \\[0.4ex]
+Load error $\times$ SE4 & $\phantom{-}0.0152^{***}$ & $\phantom{-}0.0471^{***}$ \\
+ & $(0.0029)$ & $(0.0064)$ \\
+\midrule
+Within $R^2$ & 0.028 & 0.015 \\
+Observations & 112,666 & 112,051 \\
+Zone FE & Yes & Yes \\
+Calendar Controls & Yes & Yes \\
+Wald $\chi^2(3)$, renewable error & $7.680^{*}$ & $2.678$ \\
+Wald $\chi^2(3)$, load error & $19.405^{***}$ & $40.832^{***}$ \\
+\bottomrule
+\end{tabularx}
+\begin{tablenotes}[flushleft]
+\footnotesize
+\item \textit{Notes:} Zone-specific interactions $\varepsilon_V \times \mathrm{SE}z$ and $\varepsilon_L \times \mathrm{SE}z$, $z \in \{1,2,3,4\}$; no pooled $\varepsilon_V$ or $\varepsilon_L$ term. Driscoll--Kraay standard errors (Bartlett kernel, bandwidth~24) in parentheses. Calendar controls: hour-of-day, day-of-week, and month fixed effects. $^{***}p<0.01$, $^{**}p<0.05$, $^{*}p<0.10$. Wald tests: $H_0\colon \beta_{\mathrm{SE1}}=\cdots=\beta_{\mathrm{SE4}}$ for each regressor separately, $\chi^2(3)$.
+\end{tablenotes}
+\end{threeparttable}
+\end{table}
+
+\end{document}
