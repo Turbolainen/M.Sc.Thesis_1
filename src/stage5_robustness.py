@@ -158,16 +158,7 @@ tex_r1 = (
        + FE_2COL
        + "\\bottomrule\n"
          "\\end{tabularx}\n")
-    + tablenotes(
-        "Sample excludes the energy-crisis period 22~Sep.~2021--3~Dec.~2022 "
-        "(data begin 1~Dec.~2021, so the effective exclusion window is "
-        "1~Dec.~2021--3~Dec.~2022). Column (1) regresses $Y_1$ on "
-        "$\\varepsilon_V^{\\mathrm{pre}}$ (renewable forecast error before intraday "
-        "gate closure) and $\\varepsilon_L$; column (2) regresses $Y_2$ on "
-        "$\\varepsilon_V^{\\mathrm{post}}$ (renewable forecast error after intraday "
-        "gate closure) and $\\varepsilon_L$; each column is its own regression. "
-        + DK_NOTE.format(bw=24)
-    )
+    + tablenotes(DK_NOTE.format(bw=24))
     + "\\end{threeparttable}\n"
       "\\end{table}\n"
     + POSTAMBLE
@@ -219,17 +210,7 @@ tex_r2 = (
        + FE_2COL
        + "\\bottomrule\n"
          "\\end{tabularx}\n")
-    + tablenotes(
-        "High cross-border flow hours excluded: zone-level observations where "
-        "$|\\text{net export}|$ exceeds the zone-specific 90th percentile "
-        "(no threshold is pre-defined in the codebase; the top-decile cut-off "
-        "is applied separately per zone). Column (1) regresses $Y_1$ on "
-        "$\\varepsilon_V^{\\mathrm{pre}}$ (renewable forecast error before intraday "
-        "gate closure) and $\\varepsilon_L$; column (2) regresses $Y_2$ on "
-        "$\\varepsilon_V^{\\mathrm{post}}$ (renewable forecast error after intraday "
-        "gate closure) and $\\varepsilon_L$; each column is its own regression. "
-        + DK_NOTE.format(bw=24)
-    )
+    + tablenotes(DK_NOTE.format(bw=24))
     + "\\end{threeparttable}\n"
       "\\end{table}\n"
     + POSTAMBLE
@@ -375,16 +356,8 @@ tex_r3 = (
     + "\\bottomrule\n"
       "\\end{tabularx}\n"
     + tablenotes(
-        "Levin, Lin and Chu (2002) pooled panel unit root test. "
         "$H_0$: all panels contain a unit root; $H_1$: all panels are stationary. "
-        "Model includes individual intercepts (entity demeaning via auxiliary OLS). "
-        "Lag order selected by AIC over "
-        "$\\bar{p}\\in\\{0,\\ldots,\\min(24,\\lfloor T^{1/3}\\rfloor)\\}$ per zone; "
-        "$\\bar{p}$ reports the median across zones. "
-        f"$\\bar{{T}}\\approx{llc_y1['T_bar']:,}$ usable observations per zone; "
-        "at this sample size the LLC finite-sample correction factors "
-        "(Levin et al.\\ 2002, Table~2) are negligible "
-        "and the statistic is referred to $N(0,1)$ (left-tailed)."
+        "Statistic referred to $N(0,1)$ (left-tailed)."
     )
     + "\\end{threeparttable}\n"
       "\\end{table}\n"

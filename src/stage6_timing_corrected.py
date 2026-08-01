@@ -170,11 +170,7 @@ tex2 += (
     + FE_1COL
     + "\\bottomrule\n"
     "\\end{tabularx}\n"
-    + tablenotes(
-        "$\\varepsilon_V^{\\mathrm{pre}}$: renewable forecast error before intraday "
-        "gate closure (MW). $\\varepsilon_L$: load forecast error (MW). "
-        + BASE_NOTES
-    )
+    + tablenotes(BASE_NOTES)
     + "\\end{threeparttable}\n"
     "\\end{table}\n"
     + POSTAMBLE
@@ -206,11 +202,7 @@ tex3 += (
     + FE_1COL
     + "\\bottomrule\n"
     "\\end{tabularx}\n"
-    + tablenotes(
-        "$\\varepsilon_V^{\\mathrm{post}}$: renewable forecast error after intraday "
-        "gate closure (MW). $\\varepsilon_L$: load forecast error (MW). "
-        + BASE_NOTES
-    )
+    + tablenotes(BASE_NOTES)
     + "\\end{threeparttable}\n"
     "\\end{table}\n"
     + POSTAMBLE

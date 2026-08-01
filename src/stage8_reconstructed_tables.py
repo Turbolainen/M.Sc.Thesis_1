@@ -233,12 +233,7 @@ tex4 += (
     + FE_1COL
     + "\\bottomrule\n"
     "\\end{tabularx}\n"
-    + tablenotes(
-        "$\\varepsilon_V^{\\mathrm{pre}}$ ($\\varepsilon_V^{\\mathrm{post}}$): "
-        "renewable forecast error before (after) intraday gate closure (MW). "
-        "$\\varepsilon_L$: load forecast error (MW). "
-        + BASE_NOTES
-    )
+    + tablenotes(BASE_NOTES)
     + "\\end{threeparttable}\n"
     "\\end{table}\n"
     + POSTAMBLE
@@ -276,15 +271,7 @@ tex5 += (
     + f"Wald $\\chi^2(3)$, load error & {fmt_wald(W5_L, pW5_L)} \\\\\n"
     + "\\bottomrule\n"
     "\\end{tabularx}\n"
-    + tablenotes(
-        "Zone-specific interactions $\\varepsilon_V^{\\mathrm{pre}} \\times \\mathrm{SE}z$ "
-        "and $\\varepsilon_L \\times \\mathrm{SE}z$, $z \\in \\{1,2,3,4\\}$; no pooled term "
-        "for either regressor. $\\varepsilon_V^{\\mathrm{pre}}$: renewable forecast error "
-        "before intraday gate closure (MW). "
-        + BASE_NOTES + " "
-        "Wald tests: $H_0\\colon \\beta_{\\mathrm{SE1}}=\\cdots=\\beta_{\\mathrm{SE4}}$ "
-        "for each regressor separately, $\\chi^2(3)$."
-    )
+    + tablenotes(BASE_NOTES)
     + "\\end{threeparttable}\n"
     "\\end{table}\n"
     + POSTAMBLE
@@ -322,15 +309,7 @@ tex6 += (
     + f"Wald $\\chi^2(3)$, load error & {fmt_wald(W6_L, pW6_L)} \\\\\n"
     + "\\bottomrule\n"
     "\\end{tabularx}\n"
-    + tablenotes(
-        "Zone-specific interactions $\\varepsilon_V^{\\mathrm{post}} \\times \\mathrm{SE}z$ "
-        "and $\\varepsilon_L \\times \\mathrm{SE}z$, $z \\in \\{1,2,3,4\\}$; no pooled term "
-        "for either regressor. $\\varepsilon_V^{\\mathrm{post}}$: renewable forecast error "
-        "after intraday gate closure (MW). "
-        + BASE_NOTES + " "
-        "Wald tests: $H_0\\colon \\beta_{\\mathrm{SE1}}=\\cdots=\\beta_{\\mathrm{SE4}}$ "
-        "for each regressor separately, $\\chi^2(3)$."
-    )
+    + tablenotes(BASE_NOTES)
     + "\\end{threeparttable}\n"
     "\\end{table}\n"
     + POSTAMBLE
