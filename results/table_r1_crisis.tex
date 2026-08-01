@@ -13,20 +13,20 @@
 \cmidrule(r){2-2}\cmidrule(l){3-3}
  & $Y_1$ & $Y_2$ \\
 \midrule
-Renewable forecast error ($\varepsilon_V$) & $-0.0163^{***}$ & $-0.0015^{\dagger}$ \\
- & $(0.0039)$ & $(0.0012)$ \\[0.4ex]
-Load forecast error ($\varepsilon_L$) & $\phantom{-}0.0072^{***}$ & $\phantom{-}0.0193^{***}$ \\
- & $(0.0008)$ & $(0.0020)$ \\
+Renewable forecast error & $-0.0243^{***}$ & $\phantom{-}0.0003$ \\
+ & $(0.0029)$ & $(0.0015)$ \\[0.4ex]
+Load forecast error ($\varepsilon_L$) & $\phantom{-}0.0076^{***}$ & $\phantom{-}0.0195^{***}$ \\
+ & $(0.0007)$ & $(0.0020)$ \\
 \midrule
-Within $R^2$ & 0.044 & 0.011 \\
-Observations & 79,904 & 79,561 \\
+Within $R^2$ & 0.042 & 0.011 \\
+Observations & 79,708 & 79,365 \\
 Zone FE & Yes & Yes \\
 Calendar Controls & Yes & Yes \\
 \bottomrule
 \end{tabularx}
 \begin{tablenotes}[flushleft]
 \footnotesize
-\item \textit{Notes:} Sample excludes the energy-crisis period 22~Sep.~2021--3~Dec.~2022 (data begin 1~Dec.~2021, so the effective exclusion window is 1~Dec.~2021--3~Dec.~2022). Driscoll--Kraay standard errors (Bartlett kernel, bandwidth 24~h) in parentheses. Calendar controls: hour-of-day, day-of-week, and month fixed effects. $^{***}p<0.01$, $^{**}p<0.05$, $^{*}p<0.10$. $^{\dagger}$ coefficient deviates ${>}20\%$ from Table~2 baseline.
+\item \textit{Notes:} Sample excludes the energy-crisis period 22~Sep.~2021--3~Dec.~2022 (data begin 1~Dec.~2021, so the effective exclusion window is 1~Dec.~2021--3~Dec.~2022). Column (1) regresses $Y_1$ on $\varepsilon_V^{\mathrm{pre}}$ (renewable forecast error before intraday gate closure) and $\varepsilon_L$; column (2) regresses $Y_2$ on $\varepsilon_V^{\mathrm{post}}$ (renewable forecast error after intraday gate closure) and $\varepsilon_L$; each column is its own regression. Driscoll--Kraay standard errors (Bartlett kernel, bandwidth 24~h) in parentheses. Calendar controls: hour-of-day, day-of-week, and month fixed effects. $^{***}p<0.01$, $^{**}p<0.05$, $^{*}p<0.10$.
 \end{tablenotes}
 \end{threeparttable}
 \end{table}

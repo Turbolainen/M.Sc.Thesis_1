@@ -1,0 +1,46 @@
+\documentclass{article}
+\usepackage{booktabs,threeparttable,tabularx}
+\begin{document}
+
+\begin{table}[htbp]
+\centering
+\caption{Zone Heterogeneity: Day-Ahead--Intraday Spread}
+\label{tab:5}
+\begin{threeparttable}
+\begin{tabularx}{\linewidth}{>{\raggedright\arraybackslash}Xc}
+\toprule
+ & $Y_1$ \\
+\midrule
+Pre-gate renewable error $\times$ SE1 & $-0.0215^{***}$ \\
+ & $(0.0024)$ \\[0.4ex]
+Pre-gate renewable error $\times$ SE2 & $-0.0245^{***}$ \\
+ & $(0.0034)$ \\[0.4ex]
+Pre-gate renewable error $\times$ SE3 & $-0.0334^{***}$ \\
+ & $(0.0054)$ \\[0.4ex]
+Pre-gate renewable error $\times$ SE4 & $-0.0486^{***}$ \\
+ & $(0.0099)$ \\[0.4ex]
+Load error $\times$ SE1 & $\phantom{-}0.0047^{***}$ \\
+ & $(0.0015)$ \\[0.4ex]
+Load error $\times$ SE2 & $\phantom{-}0.0043^{***}$ \\
+ & $(0.0011)$ \\[0.4ex]
+Load error $\times$ SE3 & $\phantom{-}0.0102^{***}$ \\
+ & $(0.0012)$ \\[0.4ex]
+Load error $\times$ SE4 & $\phantom{-}0.0157^{***}$ \\
+ & $(0.0029)$ \\
+\midrule
+Within $R^2$ & 0.025 \\
+Observations & 113,597 \\
+Zone FE & Yes \\
+Calendar Controls & Yes \\
+Wald $\chi^2(3)$, renewable error & $7.963^{**}$ \\
+Wald $\chi^2(3)$, load error & $18.815^{***}$ \\
+\bottomrule
+\end{tabularx}
+\begin{tablenotes}[flushleft]
+\footnotesize
+\item \textit{Notes:} Zone-specific interactions $\varepsilon_V^{\mathrm{pre}} \times \mathrm{SE}z$ and $\varepsilon_L \times \mathrm{SE}z$, $z \in \{1,2,3,4\}$; no pooled term for either regressor. $\varepsilon_V^{\mathrm{pre}}$: renewable forecast error before intraday gate closure (MW). Driscoll--Kraay standard errors (Bartlett kernel, bandwidth~24) in parentheses. Calendar controls: hour-of-day, day-of-week, and month fixed effects. $^{***}p<0.01$, $^{**}p<0.05$, $^{*}p<0.10$. Wald tests: $H_0\colon \beta_{\mathrm{SE1}}=\cdots=\beta_{\mathrm{SE4}}$ for each regressor separately, $\chi^2(3)$.
+\end{tablenotes}
+\end{threeparttable}
+\end{table}
+
+\end{document}

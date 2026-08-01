@@ -2,13 +2,13 @@
 Stage 5 — Appendix robustness tables.
 
 Table R1 : Crisis-period exclusion  (22 Sep 2021 – 3 Dec 2022;
-           data begin 1 Dec 2021, so effective window is 1 Dec 2021 – 3 Dec 2022)
+           data begin 1 Dec 2021, so effective window is 1 Dec 2021 – 3 Dec 2022).
+           Y1 ~ e_V_pre + e_L and Y2 ~ e_V_post + e_L, each its own regression,
+           reported side by side.
 Table R2 : High cross-border flow exclusion
-           (top decile of |net_export_mw| per zone; no threshold pre-defined in codebase)
+           (top decile of |net_export_mw| per zone; no threshold pre-defined in codebase).
+           Same specification as R1.
 Table R3 : Levin-Lin-Chu (2002) panel unit root test on Y1 and Y2
-Table R4 : DK lag-length sensitivity — bandwidths 12, 24 (baseline), 48 hours
-
-Flags (†): coefficient deviates > 20 % from Table 2 baseline.
 """
 
 from pathlib import Path
@@ -27,23 +27,6 @@ df = pd.read_pickle("data/processed/panel_enriched.pkl")
 ZONES = ["SE1", "SE2", "SE3", "SE4"]
 
 # ---------------------------------------------------------------------------
-# Baseline coefficients for 20 % flag check (Table 2 / stage2 results)
-# ---------------------------------------------------------------------------
-BASELINE = {
-    ("Y1", "e_V"): -0.0173,
-    ("Y1", "e_L"):  0.0074,
-    ("Y2", "e_V"): -0.0022,
-    ("Y2", "e_L"):  0.0205,
-}
-
-def is_flagged(dep, var, coef):
-    base = BASELINE.get((dep, var))
-    if base is None:
-        return False
-    return abs(coef - base) / abs(base) > 0.20
-
-
-# ---------------------------------------------------------------------------
 # Formatting helpers
 # ---------------------------------------------------------------------------
 
@@ -54,16 +37,11 @@ def stars(p):
     return ""
 
 
-def fmt_coef(b, se, p, dep=None, var=None):
-    """Coefficient cell + SE cell; adds dagger if >20 % from baseline."""
+def fmt_coef(b, se, p):
+    """Coefficient cell + SE cell."""
     st  = stars(p)
-    dag = "\\dagger" if (dep and var and is_flagged(dep, var, b)) else ""
     lp  = "" if b < 0 else "\\phantom{-}"
-    sup = st + dag
-    if sup:
-        coef_str = f"${lp}{b:.4f}^{{{sup}}}$"
-    else:
-        coef_str = f"${lp}{b:.4f}$"
+    coef_str = f"${lp}{b:.4f}^{{{st}}}$" if st else f"${lp}{b:.4f}$"
     return coef_str, f"$({se:.4f})$"
 
 
@@ -107,8 +85,7 @@ POSTAMBLE = "\n\\end{document}\n"
 DK_NOTE = (
     "Driscoll--Kraay standard errors (Bartlett kernel, bandwidth {bw}~h) in parentheses. "
     "Calendar controls: hour-of-day, day-of-week, and month fixed effects. "
-    "$^{{***}}p<0.01$, $^{{**}}p<0.05$, $^{{*}}p<0.10$. "
-    "$^{{\\dagger}}$ coefficient deviates ${{>}}20\\%$ from Table~2 baseline."
+    "$^{{***}}p<0.01$, $^{{**}}p<0.05$, $^{{*}}p<0.10$."
 )
 
 def tablenotes(text):
@@ -120,20 +97,12 @@ def tablenotes(text):
     )
 
 
-def reg_row_2col(label, d1, dep1, d2, dep2, var, last=False):
-    b1, s1 = fmt_coef(d1["coef"], d1["se"], d1["p"], dep1, var)
-    b2, s2 = fmt_coef(d2["coef"], d2["se"], d2["p"], dep2, var)
+def reg_row_2col(label, d1, d2, last=False):
+    b1, s1 = fmt_coef(d1["coef"], d1["se"], d1["p"])
+    b2, s2 = fmt_coef(d2["coef"], d2["se"], d2["p"])
     end = "\\\\\n" if last else "\\\\[0.4ex]\n"
     return (f"{label} & {b1} & {b2} \\\\\n"
             f" & {s1} & {s2} {end}")
-
-
-def reg_row_ncol(label, entries, last=False):
-    """entries: list of (coef_str, se_str)."""
-    coef_line = " & ".join(b for b, _ in entries)
-    se_line   = " & ".join(s for _, s in entries)
-    end = "\\\\\n" if last else "\\\\[0.4ex]\n"
-    return f"{label} & {coef_line} \\\\\n & {se_line} {end}"
 
 
 BASE_2COL_HEADER = (
@@ -145,8 +114,6 @@ BASE_2COL_HEADER = (
 )
 
 FE_2COL = "Zone FE & Yes & Yes \\\\\nCalendar Controls & Yes & Yes \\\\\n"
-
-REGRESSORS = ["e_V", "e_L"]
 
 
 # ===========================================================================
@@ -165,14 +132,14 @@ n_excl  = excl.sum()
 print(f"  Excluded {n_excl:,} obs  ({n_excl / len(df) * 100:.1f}% of full sample)")
 print(f"  Effective window in data: {ts[excl].min()} → {ts[excl].max()}")
 
-res_r1y1, n_r1y1 = fit_panel("Y1", REGRESSORS, df_r1)
-res_r1y2, n_r1y2 = fit_panel("Y2", REGRESSORS, df_r1)
+res_r1y1, n_r1y1 = fit_panel("Y1", ["e_V_pre",  "e_L"], df_r1)
+res_r1y2, n_r1y2 = fit_panel("Y2", ["e_V_post", "e_L"], df_r1)
 
-eV1 = extract(res_r1y1, "e_V");  eL1 = extract(res_r1y1, "e_L")
-eV2 = extract(res_r1y2, "e_V");  eL2 = extract(res_r1y2, "e_L")
+eV1 = extract(res_r1y1, "e_V_pre");  eL1 = extract(res_r1y1, "e_L")
+eV2 = extract(res_r1y2, "e_V_post"); eL2 = extract(res_r1y2, "e_L")
 
-print(f"  Y1: e_V={eV1['coef']:.4f}  e_L={eL1['coef']:.4f}")
-print(f"  Y2: e_V={eV2['coef']:.4f}  e_L={eL2['coef']:.4f}")
+print(f"  Y1: e_V_pre={eV1['coef']:.4f}  e_L={eL1['coef']:.4f}")
+print(f"  Y2: e_V_post={eV2['coef']:.4f}  e_L={eL2['coef']:.4f}")
 
 tex_r1 = (
     PREAMBLE
@@ -183,10 +150,8 @@ tex_r1 = (
       "\\begin{threeparttable}\n"
       "\\begin{tabularx}{\\linewidth}{>{\\raggedright\\arraybackslash}Xcc}\n"
     + BASE_2COL_HEADER
-    + reg_row_2col("Renewable forecast error ($\\varepsilon_V$)",
-                   eV1, "Y1", eV2, "Y2", "e_V")
-    + reg_row_2col("Load forecast error ($\\varepsilon_L$)",
-                   eL1, "Y1", eL2, "Y2", "e_L", last=True)
+    + reg_row_2col("Renewable forecast error", eV1, eV2)
+    + reg_row_2col("Load forecast error ($\\varepsilon_L$)", eL1, eL2, last=True)
     + (f"\\midrule\n"
        f"Within $R^2$ & {res_r1y1.rsquared_within:.3f} & {res_r1y2.rsquared_within:.3f} \\\\\n"
        f"Observations & {n_r1y1:,} & {n_r1y2:,} \\\\\n"
@@ -196,7 +161,11 @@ tex_r1 = (
     + tablenotes(
         "Sample excludes the energy-crisis period 22~Sep.~2021--3~Dec.~2022 "
         "(data begin 1~Dec.~2021, so the effective exclusion window is "
-        "1~Dec.~2021--3~Dec.~2022). "
+        "1~Dec.~2021--3~Dec.~2022). Column (1) regresses $Y_1$ on "
+        "$\\varepsilon_V^{\\mathrm{pre}}$ (renewable forecast error before intraday "
+        "gate closure) and $\\varepsilon_L$; column (2) regresses $Y_2$ on "
+        "$\\varepsilon_V^{\\mathrm{post}}$ (renewable forecast error after intraday "
+        "gate closure) and $\\varepsilon_L$; each column is its own regression. "
         + DK_NOTE.format(bw=24)
     )
     + "\\end{threeparttable}\n"
@@ -224,14 +193,14 @@ for z in ZONES:
     print(f"    {z}: {v:.1f} MW")
 print(f"  Excluded {hi_flow.sum():,} obs  ({hi_flow.mean()*100:.1f}% of full sample)")
 
-res_r2y1, n_r2y1 = fit_panel("Y1", REGRESSORS, df_r2)
-res_r2y2, n_r2y2 = fit_panel("Y2", REGRESSORS, df_r2)
+res_r2y1, n_r2y1 = fit_panel("Y1", ["e_V_pre",  "e_L"], df_r2)
+res_r2y2, n_r2y2 = fit_panel("Y2", ["e_V_post", "e_L"], df_r2)
 
-eV1r2 = extract(res_r2y1, "e_V");  eL1r2 = extract(res_r2y1, "e_L")
-eV2r2 = extract(res_r2y2, "e_V");  eL2r2 = extract(res_r2y2, "e_L")
+eV1r2 = extract(res_r2y1, "e_V_pre");  eL1r2 = extract(res_r2y1, "e_L")
+eV2r2 = extract(res_r2y2, "e_V_post"); eL2r2 = extract(res_r2y2, "e_L")
 
-print(f"  Y1: e_V={eV1r2['coef']:.4f}  e_L={eL1r2['coef']:.4f}")
-print(f"  Y2: e_V={eV2r2['coef']:.4f}  e_L={eL2r2['coef']:.4f}")
+print(f"  Y1: e_V_pre={eV1r2['coef']:.4f}  e_L={eL1r2['coef']:.4f}")
+print(f"  Y2: e_V_post={eV2r2['coef']:.4f}  e_L={eL2r2['coef']:.4f}")
 
 tex_r2 = (
     PREAMBLE
@@ -242,10 +211,8 @@ tex_r2 = (
       "\\begin{threeparttable}\n"
       "\\begin{tabularx}{\\linewidth}{>{\\raggedright\\arraybackslash}Xcc}\n"
     + BASE_2COL_HEADER
-    + reg_row_2col("Renewable forecast error ($\\varepsilon_V$)",
-                   eV1r2, "Y1", eV2r2, "Y2", "e_V")
-    + reg_row_2col("Load forecast error ($\\varepsilon_L$)",
-                   eL1r2, "Y1", eL2r2, "Y2", "e_L", last=True)
+    + reg_row_2col("Renewable forecast error", eV1r2, eV2r2)
+    + reg_row_2col("Load forecast error ($\\varepsilon_L$)", eL1r2, eL2r2, last=True)
     + (f"\\midrule\n"
        f"Within $R^2$ & {res_r2y1.rsquared_within:.3f} & {res_r2y2.rsquared_within:.3f} \\\\\n"
        f"Observations & {n_r2y1:,} & {n_r2y2:,} \\\\\n"
@@ -256,7 +223,11 @@ tex_r2 = (
         "High cross-border flow hours excluded: zone-level observations where "
         "$|\\text{net export}|$ exceeds the zone-specific 90th percentile "
         "(no threshold is pre-defined in the codebase; the top-decile cut-off "
-        "is applied separately per zone). "
+        "is applied separately per zone). Column (1) regresses $Y_1$ on "
+        "$\\varepsilon_V^{\\mathrm{pre}}$ (renewable forecast error before intraday "
+        "gate closure) and $\\varepsilon_L$; column (2) regresses $Y_2$ on "
+        "$\\varepsilon_V^{\\mathrm{post}}$ (renewable forecast error after intraday "
+        "gate closure) and $\\varepsilon_L$; each column is its own regression. "
         + DK_NOTE.format(bw=24)
     )
     + "\\end{threeparttable}\n"
@@ -422,125 +393,4 @@ tex_r3 = (
 (RESULTS_DIR / "table_r3_unitroot.tex").write_text(tex_r3)
 print("  → table_r3_unitroot.tex")
 
-
-# ===========================================================================
-# TABLE R4 — DK lag-length sensitivity
-# ===========================================================================
-print("\nTABLE R4: DK lag-length sensitivity")
-
-BWS = [12, 24, 48]
-lag_res = {}
-for bw in BWS:
-    ry1, ny1 = fit_panel("Y1", REGRESSORS, df, bw=bw)
-    ry2, ny2 = fit_panel("Y2", REGRESSORS, df, bw=bw)
-    lag_res[bw] = {
-        "Y1": {"res": ry1, "n": ny1},
-        "Y2": {"res": ry2, "n": ny2},
-    }
-    print(f"  bw={bw:2d}  Y1: e_V={ry1.params['e_V']:.4f}  e_L={ry1.params['e_L']:.4f}  "
-          f"Y2: e_V={ry2.params['e_V']:.4f}  e_L={ry2.params['e_L']:.4f}")
-
-
-def lag_entries(var, dep):
-    out = []
-    for bw in BWS:
-        d = extract(lag_res[bw][dep]["res"], var)
-        out.append(fmt_coef(d["coef"], d["se"], d["p"], dep, var))
-    return out
-
-
-# Panel A = Y1, Panel B = Y2
-n_cols = len(BWS)
-col_spec = ">{\\raggedright\\arraybackslash}X" + "c" * n_cols
-
-tex_r4 = (
-    PREAMBLE
-    + "\\begin{table}[htbp]\n"
-      "\\centering\n"
-      "\\caption{Robustness: Driscoll--Kraay Lag-Length Sensitivity}\n"
-      "\\label{tab:r4_lag}\n"
-      "\\begin{threeparttable}\n"
-    + f"\\begin{{tabularx}}{{\\linewidth}}{{{col_spec}}}\n"
-      "\\toprule\n"
-      " & (1) & (2) & (3) \\\\\n"
-      "\\cmidrule(r){2-2}\\cmidrule(lr){3-3}\\cmidrule(l){4-4}\n"
-      " & BW = 12 & BW = 24 & BW = 48 \\\\\n"
-      "\\midrule\n"
-      f"\\multicolumn{{{n_cols + 1}}}{{l}}{{\\textit{{Panel A: $Y_1$ (DA--intraday spread)}}}}"
-      " \\\\\n"
-      "\\addlinespace[0.3ex]\n"
-    + reg_row_ncol("Renewable forecast error ($\\varepsilon_V$)",
-                   lag_entries("e_V", "Y1"))
-    + reg_row_ncol("Load forecast error ($\\varepsilon_L$)",
-                   lag_entries("e_L", "Y1"), last=True)
-    + ("Within $R^2$ & "
-       + " & ".join(f"{lag_res[bw]['Y1']['res'].rsquared_within:.3f}" for bw in BWS)
-       + " \\\\\n"
-       "Observations & "
-       + " & ".join(f"{lag_res[bw]['Y1']['n']:,}" for bw in BWS)
-       + " \\\\\n"
-       "\\addlinespace\n"
-       f"\\multicolumn{{{n_cols + 1}}}{{l}}{{\\textit{{Panel B: $Y_2$ (intraday--balancing spread)}}}}"
-       " \\\\\n"
-       "\\addlinespace[0.3ex]\n")
-    + reg_row_ncol("Renewable forecast error ($\\varepsilon_V$)",
-                   lag_entries("e_V", "Y2"))
-    + reg_row_ncol("Load forecast error ($\\varepsilon_L$)",
-                   lag_entries("e_L", "Y2"), last=True)
-    + ("Within $R^2$ & "
-       + " & ".join(f"{lag_res[bw]['Y2']['res'].rsquared_within:.3f}" for bw in BWS)
-       + " \\\\\n"
-       "Observations & "
-       + " & ".join(f"{lag_res[bw]['Y2']['n']:,}" for bw in BWS)
-       + " \\\\\n"
-       f"Zone FE & " + " & ".join(["Yes"] * n_cols) + " \\\\\n"
-       f"Calendar Controls & " + " & ".join(["Yes"] * n_cols) + " \\\\\n"
-       "\\bottomrule\n"
-       "\\end{tabularx}\n")
-    + tablenotes(
-        "Columns vary only the Driscoll--Kraay Bartlett kernel bandwidth (BW, hours). "
-        "Column~(2) reproduces Table~2 (BW~$=24$). "
-        "$\\varepsilon_V$: total renewable (wind and solar) forecast error (MW). "
-        "$\\varepsilon_L$: load forecast error (MW). "
-        + DK_NOTE.format(bw="varies")
-    )
-    + "\\end{threeparttable}\n"
-      "\\end{table}\n"
-    + POSTAMBLE
-)
-(RESULTS_DIR / "table_r4_lag.tex").write_text(tex_r4)
-print("  → table_r4_lag.tex")
-
-
-# ===========================================================================
-# Flag summary
-# ===========================================================================
-print("\n" + "=" * 65)
-print("FLAG SUMMARY  (>20 % deviation from Table 2 baseline)")
-print("=" * 65)
-print(f"  {'Table':<22} {'Dep':<4} {'Var':<5}  {'Base':>8}  {'New':>8}  {'Δ%':>7}  Status")
-print(f"  {'-'*63}")
-
-checks = [
-    ("R1 Crisis excl.",   "Y1", "e_V", eV1["coef"]),
-    ("R1 Crisis excl.",   "Y1", "e_L", eL1["coef"]),
-    ("R1 Crisis excl.",   "Y2", "e_V", eV2["coef"]),
-    ("R1 Crisis excl.",   "Y2", "e_L", eL2["coef"]),
-    ("R2 High-flow excl.","Y1", "e_V", eV1r2["coef"]),
-    ("R2 High-flow excl.","Y1", "e_L", eL1r2["coef"]),
-    ("R2 High-flow excl.","Y2", "e_V", eV2r2["coef"]),
-    ("R2 High-flow excl.","Y2", "e_L", eL2r2["coef"]),
-]
-for bw in [12, 48]:
-    for dep in ["Y1", "Y2"]:
-        for var in ["e_V", "e_L"]:
-            c = float(lag_res[bw][dep]["res"].params[var])
-            checks.append((f"R4 BW={bw}", dep, var, c))
-
-for tbl, dep, var, coef in checks:
-    base = BASELINE[(dep, var)]
-    pct  = (coef - base) / abs(base) * 100
-    flag = "*** FLAGGED ***" if abs(pct) > 20 else "ok"
-    print(f"  {tbl:<22} {dep:<4} {var:<5}  {base:>8.4f}  {coef:>8.4f}  {pct:>+6.1f}%  {flag}")
-
-print("\nDone. Four tables written to results/.")
+print("\nDone. Three tables written to results/.")

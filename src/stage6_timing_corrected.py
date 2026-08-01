@@ -1,21 +1,15 @@
 """
-Stage 6 — Timing-corrected H1 specifications.
+Stage 6 — Table 2 & Table 3: timing-corrected baseline specifications.
 
-The Stage 2 baseline regresses both spreads on the *total* DA-to-actual
-forecast error e_V. For Y1 (P_ID - P_DA), that error includes e_V_post
-(actual - ID forecast), information that does not exist yet when the
-intraday price is formed. This stage re-specifies each spread using only
-the forecast-error component that is actually available at the time the
-spread is realized:
+The forecast error for each spread must be restricted to the information
+available at the time that spread is realized:
 
-  Reg 6: Y1 ~ e_V_pre  + e_L   (DA -> ID revision only; zone FE, calendar
-                                 dummies, DK-SE)
-  Reg 7: Y2 ~ e_V_post + e_L   (ID -> actual revision only; same)
+  Table 2: Y1 ~ e_V_pre  + e_L   (DA -> ID revision only; zone FE, calendar
+                                   dummies, DK-SE)
+  Table 3: Y2 ~ e_V_post + e_L   (ID -> actual revision only; same)
 
 e_L is left unchanged in both (load has no separate ID-forecast series,
 so it cannot be split into pre/post components).
-
-Does not modify stage2_h1_baselines.py or its outputs.
 """
 
 from pathlib import Path
@@ -61,7 +55,7 @@ def run_reg(dep_var: str, var: str, label: str):
 
 
 print("=" * 60)
-print("STAGE 6 — TIMING-CORRECTED H1 SPECIFICATIONS")
+print("STAGE 6 — TABLE 2 & TABLE 3: TIMING-CORRECTED SPECIFICATIONS")
 print("=" * 60)
 
 res_y1c, n_y1c = run_reg("Y1", "e_V_pre",  "Y1 ~ e_V_pre + e_L")
@@ -96,7 +90,7 @@ print("\nSaved data/processed/stage6_results.pkl")
 
 
 # ===========================================================================
-# LaTeX tables (same style as table_h1.tex / table_h2.tex)
+# LaTeX tables: Table 2, Table 3
 # ===========================================================================
 
 def stars(p):
@@ -155,21 +149,21 @@ FE_1COL = "Zone FE & Yes \\\\\nCalendar Controls & Yes \\\\\n"
 e_V_pre_y1c = extract(res_y1c, "e_V_pre")
 e_L_y1c     = extract(res_y1c, "e_L")
 
-tex_r5 = (
+tex2 = (
     PREAMBLE
     + "\\begin{table}[htbp]\n"
     "\\centering\n"
     "\\caption{Day-Ahead--Intraday Spread: Pre-Gate Renewable Forecast Error}\n"
-    "\\label{tab:r5_y1_timing}\n"
+    "\\label{tab:2}\n"
     "\\begin{threeparttable}\n"
     "\\begin{tabularx}{\\linewidth}{>{\\raggedright\\arraybackslash}Xc}\n"
     "\\toprule\n"
     " & $Y_1$ \\\\\n"
     "\\midrule\n"
 )
-tex_r5 += reg_row("Pre-gate renewable error ($\\varepsilon_V^{\\mathrm{pre}}$)", e_V_pre_y1c)
-tex_r5 += reg_row("Load forecast error ($\\varepsilon_L$)", e_L_y1c, last=True)
-tex_r5 += (
+tex2 += reg_row("Pre-gate renewable error ($\\varepsilon_V^{\\mathrm{pre}}$)", e_V_pre_y1c)
+tex2 += reg_row("Load forecast error ($\\varepsilon_L$)", e_L_y1c, last=True)
+tex2 += (
     "\\midrule\n"
     f"Within $R^2$ & {res_y1c.rsquared_within:.3f} \\\\\n"
     f"Observations & {n_y1c:,} \\\\\n"
@@ -185,27 +179,27 @@ tex_r5 += (
     "\\end{table}\n"
     + POSTAMBLE
 )
-(RESULTS_DIR / "table_r5_y1_timing.tex").write_text(tex_r5)
-print("Wrote table_r5_y1_timing.tex")
+(RESULTS_DIR / "table2.tex").write_text(tex2)
+print("Wrote table2.tex")
 
 e_V_post_y2c = extract(res_y2c, "e_V_post")
 e_L_y2c      = extract(res_y2c, "e_L")
 
-tex_r6 = (
+tex3 = (
     PREAMBLE
     + "\\begin{table}[htbp]\n"
     "\\centering\n"
     "\\caption{Intraday--Balancing Spread: Post-Gate Renewable Forecast Error}\n"
-    "\\label{tab:r6_y2_timing}\n"
+    "\\label{tab:3}\n"
     "\\begin{threeparttable}\n"
     "\\begin{tabularx}{\\linewidth}{>{\\raggedright\\arraybackslash}Xc}\n"
     "\\toprule\n"
     " & $Y_2$ \\\\\n"
     "\\midrule\n"
 )
-tex_r6 += reg_row("Post-gate renewable error ($\\varepsilon_V^{\\mathrm{post}}$)", e_V_post_y2c)
-tex_r6 += reg_row("Load forecast error ($\\varepsilon_L$)", e_L_y2c, last=True)
-tex_r6 += (
+tex3 += reg_row("Post-gate renewable error ($\\varepsilon_V^{\\mathrm{post}}$)", e_V_post_y2c)
+tex3 += reg_row("Load forecast error ($\\varepsilon_L$)", e_L_y2c, last=True)
+tex3 += (
     "\\midrule\n"
     f"Within $R^2$ & {res_y2c.rsquared_within:.3f} \\\\\n"
     f"Observations & {n_y2c:,} \\\\\n"
@@ -221,5 +215,5 @@ tex_r6 += (
     "\\end{table}\n"
     + POSTAMBLE
 )
-(RESULTS_DIR / "table_r6_y2_timing.tex").write_text(tex_r6)
-print("Wrote table_r6_y2_timing.tex")
+(RESULTS_DIR / "table3.tex").write_text(tex3)
+print("Wrote table3.tex")
