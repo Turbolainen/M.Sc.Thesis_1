@@ -23,6 +23,7 @@ TABLES = [
     ("table_r1_crisis.tex",    "Table R1 — Robustness: Crisis-Period Exclusion"),
     ("table_r2_flow.tex",      "Table R2 — Robustness: High Cross-Border Flow Exclusion"),
     ("table_r3_unitroot.tex",  "Table R3 — Panel Unit Root Test"),
+    ("table_r4_totalv.tex",    "Table R4 — Intraday–Balancing Spread, Total Renewable Forecast Error"),
 ]
 
 

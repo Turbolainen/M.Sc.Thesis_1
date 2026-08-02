@@ -9,6 +9,8 @@ Table R2 : High cross-border flow exclusion
            (top decile of |net_export_mw| per zone; no threshold pre-defined in codebase).
            Same specification as R1.
 Table R3 : Levin-Lin-Chu (2002) panel unit root test on Y1 and Y2
+Table R4 : Intraday-balancing spread on the total (undecomposed) renewable
+           forecast error: Y2 ~ e_V + e_L, full sample
 """
 
 from pathlib import Path
@@ -113,7 +115,14 @@ BASE_2COL_HEADER = (
     "\\midrule\n"
 )
 
+def reg_row_1col(label, d, last=False):
+    b, s = fmt_coef(d["coef"], d["se"], d["p"])
+    end = "\\\\\n" if last else "\\\\[0.4ex]\n"
+    return f"{label} & {b} \\\\\n & {s} {end}"
+
+
 FE_2COL = "Zone FE & Yes & Yes \\\\\nCalendar Controls & Yes & Yes \\\\\n"
+FE_1COL = "Zone FE & Yes \\\\\nCalendar Controls & Yes \\\\\n"
 
 
 # ===========================================================================
@@ -366,4 +375,43 @@ tex_r3 = (
 (RESULTS_DIR / "table_r3_unitroot.tex").write_text(tex_r3)
 print("  → table_r3_unitroot.tex")
 
-print("\nDone. Three tables written to results/.")
+
+# ===========================================================================
+# TABLE R4 — Intraday-balancing spread on the total renewable forecast error
+# ===========================================================================
+print("\nTABLE R4: Total renewable forecast error")
+
+res_r4, n_r4 = fit_panel("Y2", ["e_V", "e_L"], df)
+
+eV_r4 = extract(res_r4, "e_V"); eL_r4 = extract(res_r4, "e_L")
+
+print(f"  Y2: e_V={eV_r4['coef']:.4f}  e_L={eL_r4['coef']:.4f}")
+
+tex_r4 = (
+    PREAMBLE
+    + "\\begin{table}[htbp]\n"
+      "\\centering\n"
+      "\\caption{Intraday--Balancing Spread: Total Renewable Forecast Error}\n"
+      "\\label{tab:r4_totalv}\n"
+      "\\begin{threeparttable}\n"
+      "\\begin{tabularx}{\\linewidth}{>{\\raggedright\\arraybackslash}Xc}\n"
+      "\\toprule\n"
+      " & $Y_2$ \\\\\n"
+      "\\midrule\n"
+    + reg_row_1col("Renewable forecast error ($\\varepsilon_V$)", eV_r4)
+    + reg_row_1col("Load forecast error ($\\varepsilon_L$)", eL_r4, last=True)
+    + (f"\\midrule\n"
+       f"Within $R^2$ & {res_r4.rsquared_within:.3f} \\\\\n"
+       f"Observations & {n_r4:,} \\\\\n"
+       + FE_1COL
+       + "\\bottomrule\n"
+         "\\end{tabularx}\n")
+    + tablenotes(DK_NOTE.format(bw=24))
+    + "\\end{threeparttable}\n"
+      "\\end{table}\n"
+    + POSTAMBLE
+)
+(RESULTS_DIR / "table_r4_totalv.tex").write_text(tex_r4)
+print("  → table_r4_totalv.tex")
+
+print("\nDone. Four tables written to results/.")
