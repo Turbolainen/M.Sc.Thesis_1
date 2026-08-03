@@ -1,18 +1,18 @@
 """
-Stage 8 — Table 4, Table 5, Table 6: full timing-correct specification.
+Stage 8 — Table 4 and Table 5: full timing-correct specification.
 
 Table 4 extends Table 3 (Y2 ~ e_V_post + e_L) by adding back the pre-gate
 component, decomposed rather than pooled:
 
   Table 4: Y2 ~ e_V_pre + e_V_post + e_L   (zone FE, calendar dummies, DK-SE)
 
-Tables 5 and 6 are the zone-heterogeneity counterparts of Table 2 and
-Table 3 — each spread's zone-specific response to the forecast-error
-component actually available when that spread is realized, together with
-the zone-specific load-error response (cf. stage7's H3-loadzone design):
+Table 5 is the zone-heterogeneity counterpart of Table 2 and Table 3,
+Y1 and Y2 reported side by side in one table — each spread's zone-specific
+response to the forecast-error component actually available when that
+spread is realized, together with the zone-specific load-error response:
 
-  Table 5: Y1 ~ zone×e_V_pre  + zone×e_L   (+ Wald tests, both regressors)
-  Table 6: Y2 ~ zone×e_V_post + zone×e_L   (same)
+  Column (1): Y1 ~ zone×e_V_pre  + zone×e_L   (+ Wald tests, both regressors)
+  Column (2): Y2 ~ zone×e_V_post + zone×e_L   (same)
 """
 
 from pathlib import Path
@@ -174,6 +174,14 @@ def reg_row(label, result, last=False):
     return f"{label} & {b} \\\\\n & {s} {end}"
 
 
+def reg_row_2col(label, d1, d2, last=False):
+    b1, s1 = fmt_coef(d1["coef"], d1["se"], d1["p"])
+    b2, s2 = fmt_coef(d2["coef"], d2["se"], d2["p"])
+    end = "\\\\\n" if last else "\\\\[0.4ex]\n"
+    return (f"{label} & {b1} & {b2} \\\\\n"
+            f" & {s1} & {s2} {end}")
+
+
 def fmt_wald(W, p):
     st = stars(p)
     return f"${W:.3f}^{{{st}}}$" if st else f"${W:.3f}$"
@@ -202,6 +210,7 @@ BASE_NOTES = (
 )
 
 FE_1COL = "Zone FE & Yes \\\\\nCalendar Controls & Yes \\\\\n"
+FE_2COL = "Zone FE & Yes & Yes \\\\\nCalendar Controls & Yes & Yes \\\\\n"
 
 # ---------------------------------------------------------------------------
 # Table 4 tex
@@ -242,77 +251,48 @@ tex4 += (
 print("Wrote table4.tex")
 
 # ---------------------------------------------------------------------------
-# Table 5 tex (Y1, zone×e_V_pre + zone×e_L)
+# Table 5 tex (Y1 and Y2 side by side: zone×e_V_pre / zone×e_V_post + zone×e_L)
 # ---------------------------------------------------------------------------
 
 tex5 = (
     PREAMBLE
     + "\\begin{table}[htbp]\n"
     "\\centering\n"
-    "\\caption{Zone Heterogeneity: Day-Ahead--Intraday Spread}\n"
+    "\\caption{Zone Heterogeneity: Day-Ahead--Intraday and Intraday--Balancing Spreads}\n"
     "\\label{tab:5}\n"
     "\\begin{threeparttable}\n"
-    "\\begin{tabularx}{\\linewidth}{>{\\raggedright\\arraybackslash}Xc}\n"
+    "\\begin{tabularx}{\\linewidth}{>{\\raggedright\\arraybackslash}Xcc}\n"
     "\\toprule\n"
-    " & $Y_1$ \\\\\n"
+    " & (1) & (2) \\\\\n"
+    "\\cmidrule(r){2-2}\\cmidrule(l){3-3}\n"
+    " & $Y_1$ & $Y_2$ \\\\\n"
     "\\midrule\n"
 )
 for zone in ZONES:
-    tex5 += reg_row(f"Pre-gate renewable error $\\times$ {zone}", extract(res5, f"eV_{zone}"))
+    tex5 += reg_row_2col(f"Renewable error $\\times$ {zone}",
+                          extract(res5, f"eV_{zone}"), extract(res6, f"eV_{zone}"))
 for i, zone in enumerate(ZONES):
     last = (i == len(ZONES) - 1)
-    tex5 += reg_row(f"Load error $\\times$ {zone}", extract(res5, f"eL_{zone}"), last=last)
+    tex5 += reg_row_2col(f"Load error $\\times$ {zone}",
+                          extract(res5, f"eL_{zone}"), extract(res6, f"eL_{zone}"), last=last)
 tex5 += (
     "\\midrule\n"
-    f"Within $R^2$ & {res5.rsquared_within:.3f} \\\\\n"
-    f"Observations & {n5:,} \\\\\n"
-    + FE_1COL
-    + f"Wald $\\chi^2(3)$, renewable error & {fmt_wald(W5_V, pW5_V)} \\\\\n"
-    + f"Wald $\\chi^2(3)$, load error & {fmt_wald(W5_L, pW5_L)} \\\\\n"
+    f"Within $R^2$ & {res5.rsquared_within:.3f} & {res6.rsquared_within:.3f} \\\\\n"
+    f"Observations & {n5:,} & {n6:,} \\\\\n"
+    + FE_2COL
+    + f"Wald $\\chi^2(3)$, renewable error & {fmt_wald(W5_V, pW5_V)} & {fmt_wald(W6_V, pW6_V)} \\\\\n"
+    + f"Wald $\\chi^2(3)$, load error & {fmt_wald(W5_L, pW5_L)} & {fmt_wald(W6_L, pW6_L)} \\\\\n"
     + "\\bottomrule\n"
     "\\end{tabularx}\n"
-    + tablenotes(BASE_NOTES)
+    + tablenotes(
+        "Column (1) uses the pre-gate renewable error component "
+        "($\\varepsilon_V^{\\mathrm{pre}}$); column (2) uses the post-gate "
+        "component ($\\varepsilon_V^{\\mathrm{post}}$). "
+        + BASE_NOTES
+    )
     + "\\end{threeparttable}\n"
     "\\end{table}\n"
     + POSTAMBLE
 )
 (RESULTS_DIR / "table5.tex").write_text(tex5)
 print("Wrote table5.tex")
-
-# ---------------------------------------------------------------------------
-# Table 6 tex (Y2, zone×e_V_post + zone×e_L)
-# ---------------------------------------------------------------------------
-
-tex6 = (
-    PREAMBLE
-    + "\\begin{table}[htbp]\n"
-    "\\centering\n"
-    "\\caption{Zone Heterogeneity: Intraday--Balancing Spread}\n"
-    "\\label{tab:6}\n"
-    "\\begin{threeparttable}\n"
-    "\\begin{tabularx}{\\linewidth}{>{\\raggedright\\arraybackslash}Xc}\n"
-    "\\toprule\n"
-    " & $Y_2$ \\\\\n"
-    "\\midrule\n"
-)
-for zone in ZONES:
-    tex6 += reg_row(f"Post-gate renewable error $\\times$ {zone}", extract(res6, f"eV_{zone}"))
-for i, zone in enumerate(ZONES):
-    last = (i == len(ZONES) - 1)
-    tex6 += reg_row(f"Load error $\\times$ {zone}", extract(res6, f"eL_{zone}"), last=last)
-tex6 += (
-    "\\midrule\n"
-    f"Within $R^2$ & {res6.rsquared_within:.3f} \\\\\n"
-    f"Observations & {n6:,} \\\\\n"
-    + FE_1COL
-    + f"Wald $\\chi^2(3)$, renewable error & {fmt_wald(W6_V, pW6_V)} \\\\\n"
-    + f"Wald $\\chi^2(3)$, load error & {fmt_wald(W6_L, pW6_L)} \\\\\n"
-    + "\\bottomrule\n"
-    "\\end{tabularx}\n"
-    + tablenotes(BASE_NOTES)
-    + "\\end{threeparttable}\n"
-    "\\end{table}\n"
-    + POSTAMBLE
-)
-(RESULTS_DIR / "table6.tex").write_text(tex6)
-print("Wrote table6.tex")
